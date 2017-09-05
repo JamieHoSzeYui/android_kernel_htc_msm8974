@@ -123,6 +123,9 @@ static int inet6_create(struct net *net, struct socket *sock, int protocol,
 	int try_loading_module = 0;
 	int err;
 
+	if (protocol < 0 || protocol >= IPPROTO_MAX)
+		return -EINVAL;
+
 	if (!current_has_network())
 		return -EACCES;
 
@@ -819,7 +822,6 @@ static struct sk_buff *ipv6_gso_segment(struct sk_buff *skb,
 	const struct inet6_protocol *ops;
 	int proto;
 	struct frag_hdr *fptr;
-	unsigned int unfrag_ip6hlen;
 	u8 *prevhdr;
 	int offset = 0;
 
@@ -858,9 +860,11 @@ static struct sk_buff *ipv6_gso_segment(struct sk_buff *skb,
 		ipv6h->payload_len = htons(skb->len - skb->mac_len -
 					   sizeof(*ipv6h));
 		if (proto == IPPROTO_UDP) {
-			unfrag_ip6hlen = ip6_find_1stfragopt(skb, &prevhdr);
+			int err = ip6_find_1stfragopt(skb, &prevhdr);
+			if (err < 0)
+				return ERR_PTR(err);
 			fptr = (struct frag_hdr *)(skb_network_header(skb) +
-				unfrag_ip6hlen);
+				err);
 			fptr->frag_off = htons(offset);
 			if (skb->next != NULL)
 				fptr->frag_off |= htons(IP6_MF);

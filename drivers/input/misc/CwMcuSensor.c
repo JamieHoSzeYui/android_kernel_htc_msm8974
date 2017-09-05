@@ -1575,9 +1575,9 @@ static void __devinit CWMCU_init_input_device(struct CWMCU_data *sensor,struct i
 	input_set_abs_params(idev, ABS_MAGNETIC_UNCALIBRATED_BIAS_Y, -DPS_MAX, DPS_MAX, 0, 0);
 	input_set_abs_params(idev, ABS_MAGNETIC_UNCALIBRATED_BIAS_Z, -DPS_MAX, DPS_MAX, 0, 0);
 
-	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_X, -DPS_MAX, DPS_MAX, 0, 0);
-	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_Y, -DPS_MAX, DPS_MAX, 0, 0);
-	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_Z, -DPS_MAX, DPS_MAX, 0, 0);
+//	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_X, -DPS_MAX, DPS_MAX, 0, 0);
+//	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_Y, -DPS_MAX, DPS_MAX, 0, 0);
+//	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_Z, -DPS_MAX, DPS_MAX, 0, 0);
 	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_BIAS_X, -DPS_MAX, DPS_MAX, 0, 0);
 	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_BIAS_Y, -DPS_MAX, DPS_MAX, 0, 0);
 	input_set_abs_params(idev, ABS_GYROSCOPE_UNCALIBRATED_BIAS_Z, -DPS_MAX, DPS_MAX, 0, 0);
@@ -3056,14 +3056,18 @@ static DEVICE_ATTR(p_status, 0444, p_status_show, NULL);
 
 static int set_gesture_motion(struct device *dev,struct device_attribute *attr,const char *buf, size_t count){
 	u8 *data;
-	u32 val = 0;
-	int i;
+	unsigned long val = 0;
+	int i, rc;
 
-	sscanf(buf, "0x%x\n", &val);
+	rc = kstrtol(buf, 16, &val);
+	if (rc) {
+		pr_err("%s: kstrtol fails, error = %d\n", __func__, rc);
+		return rc;
+	}
 
 	data = (u8 *)&val;
 
-	pr_debug("%s: Gesture motion parameter = 0x%x\n", __func__, val);
+	pr_debug("%s: Gesture motion parameter = %lu\n", __func__, val);
 	pr_debug("%s: data(0, 1, 2, 3) = (0x%x, 0x%x, 0x%x, 0x%x)\n",
 			__func__, data[0], data[1], data[2], data[3]);
 	mcu_data->gesture_motion_param = val;

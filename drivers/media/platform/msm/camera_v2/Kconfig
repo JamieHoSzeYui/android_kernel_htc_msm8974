@@ -196,6 +196,12 @@ config OV8865
 		snapshot config = 3264 * 2448 at 30 fps.
 		Max fps is 30fps at 3264 * 2448, 60fps at 1632 * 1224
 
+config OV13850_800M
+	bool "Sensor OV13850_800M (BAYER 13M)"
+	depends on MSMB_CAMERA
+	---help---
+	  Support for ov13850_800M sensor driver.
+
 config s5k4e1
 	bool "Sensor s5k4e1 (BAYER 5MP)"
 	depends on MSMB_CAMERA
@@ -291,3 +297,17 @@ config RUMBAS_ACT
 	default n
 	---help---
 	  Autofocus of RUMBA-S actuator
+
+config IMX214_800M_FOV77
+	bool "Sensor imx214 800M fov 77"
+	depends on MSMB_CAMERA
+	default n
+	---help---
+	  Support for IMX214 sensor driver.
+
+config IMX214_800M_FOV87
+	bool "Sensor imx214 800M fov 87"
+	depends on MSMB_CAMERA
+	default n
+	---help---
+	  Support for IMX214 sensor driver.

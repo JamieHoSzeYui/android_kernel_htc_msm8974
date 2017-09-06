@@ -20,6 +20,14 @@
 		qcom,flash-source = <&lm3643_flash0 &lm3643_flash1>;
 		qcom,torch-source = <&lm3643_torch0 &lm3643_torch1>;
 	};
+	
+	led_flash0: qcom,camera-led-flash {
+		cell-index = <0>;
+		compatible = "qcom,camera-led-flash";
+		qcom,flash-type = <1>;
+		qcom,torch-source = <&pm8941_torch>;
+		qcom,flash-source = <&pm8941_flash0 &pm8941_flash1>;
+	};
 
 };
 

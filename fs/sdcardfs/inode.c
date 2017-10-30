@@ -34,10 +34,14 @@ const struct cred *override_fsids(struct sdcardfs_sb_info *sbi,
 	if (!cred)
 		return NULL;
 
-	if (data->under_obb)
-		uid = AID_MEDIA_OBB;
-	else
-		uid = multiuser_get_uid(data->userid, sbi->options.fs_low_uid);
+	if (sbi->options.gid_derivation) {
+		if (data->under_obb)
+			uid = AID_MEDIA_OBB;
+		else
+			uid = multiuser_get_uid(data->userid, sbi->options.fs_low_uid);
+	} else {
+		uid = sbi->options.fs_low_uid;
+	}
 	cred->fsuid = uid;
 	cred->fsgid = sbi->options.fs_low_gid;
 
@@ -190,7 +194,6 @@ static int sdcardfs_unlink(struct inode *dir, struct dentry *dentry)
 	sdcardfs_get_lower_path(dentry, &lower_path);
 	lower_dentry = lower_path.dentry;
 	lower_mnt = lower_path.mnt;
-	dget(lower_dentry);
 	lower_dir_dentry = lock_parent(lower_dentry);
 
 	err = mnt_want_write(lower_path.mnt);
@@ -219,7 +222,6 @@ out:
 	mnt_drop_write(lower_path.mnt);
 out_unlock:
 	unlock_dir(lower_dir_dentry);
-	dput(lower_dentry);
 	sdcardfs_put_lower_path(dentry, &lower_path);
 	REVERT_CRED(saved_cred);
 out_eacces:

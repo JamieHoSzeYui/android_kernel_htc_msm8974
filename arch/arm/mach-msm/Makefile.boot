@@ -69,6 +69,8 @@ else ifeq ($(CONFIG_MACH_M8_DUG), y)
 	dtb-$(CONFIG_ARCH_MSM8974)	+= msm8974pro-ab-pm8941-m8dug.dtb
 	dtb-$(CONFIG_ARCH_MSM8974)	+= msm8974pro-ab-pm8941-m8dug-xb.dtb
 	dtb-$(CONFIG_ARCH_MSM8974)	+= msm8974pro-ab-pm8941-m8dug-xc.dtb
+else ifeq ($(CONFIG_MACH_EYE_UL), y)
+	dtb-$(CONFIG_ARCH_MSM8974)  += msm8974pro-aa-pm8941-eyeul.dtb
 else
 	dtb-$(CONFIG_ARCH_MSM8974)	+= msm8974-v1-cdp.dtb
 	dtb-$(CONFIG_ARCH_MSM8974)	+= msm8974-v1-fluid.dtb
@@ -193,7 +195,3 @@ initrd_phys-$(CONFIG_ARCH_FSM9XXX)	:= 0x12000000
    zreladdr-$(CONFIG_ARCH_MSMSAMARIUM)	:= 0x00008000
 	dtb-$(CONFIG_ARCH_MSMSAMARIUM)	+= msmsamarium-sim.dtb
 	dtb-$(CONFIG_ARCH_MSMSAMARIUM)	+= msmsamarium-rumi.dtb
-
-ifeq ($(CONFIG_MACH_EYE_UL), y)
-	htc_dtb-$(CONFIG_ARCH_MSM8974)  += msm8974pro-aa-pm8941-eyeul.dtb
-endif
